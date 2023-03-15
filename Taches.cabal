@@ -1,0 +1,196 @@
+cabal-version:      2.4
+name:               Taches
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+synopsis: Programmes sur la ligne de commande pour la gestion des taches.
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+license: MIT
+author:             Charles St-Pierre
+maintainer:         Charles St-Pierre
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  Tache
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, time, aeson, text
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+library Parametres
+    exposed-modules:  Parametres
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, optparse-applicative, text
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+library Telephone
+    exposed-modules:  Telephone
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, text, aeson
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+
+library Personne
+    exposed-modules:  Personne
+
+    -- Modules included in this library but not exported.
+    other-modules: Telephone, CRUD, Table
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, aeson, text, uuid, mtl, transformers
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+library Initiative
+    exposed-modules:  Initiative
+
+    -- Modules included in this library but not exported.
+    other-modules: Table
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, aeson, text, time, uuid, text-conversions
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+library Table
+    exposed-modules:  Table
+
+    -- Modules included in this library but not exported.
+    -- other-modules: 
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, text
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+library CRUD
+    exposed-modules:  CRUD
+
+    -- Modules included in this library but not exported.
+    other-modules: Table
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base >=4.13.0.0, text, mtl, transformers, aeson
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+executable tt
+    main-is:          Taches.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules: Parametres, Tache
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+        base >=4.13.0.0,
+        time,
+        aeson,
+        directory,
+        filepath,
+        text,
+        optparse-applicative
+    hs-source-dirs:   app, src
+    default-language: Haskell2010
+
+executable pp
+    main-is:          Contacts.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules: Personne, CRUD, Telephone, Table
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+        base >=4.13.0.0,
+        time,
+        aeson,
+        directory,
+        optparse-applicative,
+        filepath,
+        Parametres, text, bytestring,
+        uuid, mtl, transformers
+    hs-source-dirs:   app, src
+    default-language: Haskell2010
+
+executable mi
+    main-is:          Initiatives.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules: Initiative, Table
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+        base >=4.13.0.0,
+        time,
+        aeson,
+        directory,
+        optparse-applicative,
+        filepath,
+        text, bytestring, uuid,
+        text-conversions
+    hs-source-dirs:   app, src
+    default-language: Haskell2010
+
+executable uuid
+    main-is:          Uuid.hs
+
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+        base >=4.13.0.0,
+        aeson,
+        directory,
+        filepath,
+        text, bytestring,
+        uuid
+    hs-source-dirs:   app
+    default-language: Haskell2010
+
+Test-Suite test-table
+  type:               exitcode-stdio-1.0
+  main-is:            TestTable.hs
+  hs-source-dirs:     test
+  default-language: Haskell2010
+  build-depends:      base >=4.13.0.0,
+                      test-framework,
+                      test-framework-hunit,
+                      HUnit,
+                      Table
+
