@@ -36,16 +36,6 @@ instance Tabuler Personne where
 instance CRUD Personne where
   ajouter fichier personnes = obtenirContact >>= ajouterEtPersister fichier personnes
 
-  effacer fichier personnes = do
-    let table = convertirAvecEntête personnes
-        tableIndexee = Table.index <> table
-    print tableIndexee >> sélectionnerContact >>= effacerEtPersister fichier personnes
-
-  lister personnes = do
-    let table = convertirAvecEntête personnes
-        tableIndexee = Table.index <> table
-    print tableIndexee >> return personnes
-
   modifier fichier personnes = do
     let table = convertirAvecEntête personnes
         tableIndexee = Table.index <> table
@@ -64,16 +54,6 @@ modifierEtPersister fichier elements mIndex = do
              let elements' = debut <> (c:fin)
              encodeFile fichier elements'
              return elements'
-
-effacerEtPersister :: ToJSON a => FilePath -> [a] -> Maybe Integer -> IO [a]
-effacerEtPersister fichier elements mIndex = do
-  case mIndex of
-    Nothing -> return elements
-    Just index -> do
-      let (debut,fin) = genericSplitAt index elements
-          elements' = debut <> drop 1 fin
-      encodeFile fichier elements'
-      return elements'
 
 ajouterEtPersister :: ToJSON a => FilePath -> [a] -> Maybe a -> IO [a]
 ajouterEtPersister fichier elements mElement = do
@@ -100,7 +80,6 @@ obtenirContact = runMaybeT $ do
   altAccount <- MaybeT (TIO.putStr "Alt Account : " >> checkInput <$> TIO.getLine)
   courriel <- MaybeT (TIO.putStr "Courriel : " >> checkInput <$> TIO.getLine)
   return $ Personne uuid nom alias altAccount courriel []
-
 
 obtLigneAvecDéfaut :: T.Text -> T.Text -> MaybeT IO T.Text
 obtLigneAvecDéfaut question défaut = do

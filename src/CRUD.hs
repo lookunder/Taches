@@ -16,16 +16,16 @@ class (ToJSON a, Tabuler a) => CRUD a where
   ajouter  :: FilePath -> [a] -> IO [a]
 
   effacer  :: FilePath -> [a] -> IO [a]
-  --effacer fichier elements = do
-  --  let table = convertirAvecEntête elements
-  --      tableIndexee = Table.index <> table
-  --  print tableIndexee >> sélectionnerContact >>= effacerEtPersister fichier elements
+  effacer fichier elements = do
+    let table = convertirAvecEntête elements
+        tableIndexee = Table.index <> table
+    print tableIndexee >> sélectionnerContact >>= effacerEtPersister fichier elements
 
   lister   :: [a] -> IO [a]
-  --lister elements = do
-  --  let table = convertirAvecEntête elements
-  --      tableIndexee = Table.index <> table
-  --  print tableIndexee >> return elements
+  lister elements = do
+    let table = convertirAvecEntête elements
+        tableIndexee = Table.index <> table
+    print tableIndexee >> return elements
 
   modifier :: FilePath -> [a] -> IO [a]
 
