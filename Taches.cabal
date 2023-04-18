@@ -192,5 +192,6 @@ Test-Suite test-table
                       test-framework,
                       test-framework-hunit,
                       HUnit,
-                      Table
+                      Table,
+                      text
 
