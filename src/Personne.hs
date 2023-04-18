@@ -64,10 +64,6 @@ ajouterEtPersister fichier elements mElement = do
       encodeFile fichier elements'
       return elements'
 
-checkInput :: T.Text -> Maybe T.Text
-checkInput ":q" = Nothing
-checkInput i    = Just i
-
 utiliseDéfaut :: T.Text -> T.Text -> T.Text
 utiliseDéfaut défaut "" = défaut
 utiliseDéfaut _      t  = t
@@ -93,8 +89,3 @@ modifierContact personne = runMaybeT $ do
   altAccount <- obtLigneAvecDéfaut "Alt Account" (altAccount personne)
   courriel <- obtLigneAvecDéfaut "Courriel" (courriel personne)
   return $ Personne uuid nom alias altAccount courriel []
-
-sélectionnerContact :: IO (Maybe Integer)
-sélectionnerContact = runMaybeT $ do
-  numéro <- MaybeT (TIO.putStr "Numéro : " >> checkInput <$> TIO.getLine)
-  eitherA2MaybeT . TR.decimal $ numéro

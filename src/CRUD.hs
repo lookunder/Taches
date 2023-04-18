@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module CRUD (CRUD(..), eitherA2MaybeT) where
+module CRUD (CRUD(..), eitherA2MaybeT, checkInput, sélectionnerContact) where
 
 import Data.Aeson
 import Data.List
