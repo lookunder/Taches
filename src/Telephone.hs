@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric, OverloadedStrings #-}
 
-module Telephone (Telephone(..), affiche) where
+module Telephone (Telephone(..)) where
 
 import GHC.Generics
 import Data.Aeson
@@ -22,6 +22,3 @@ instance ToJSON Telephone where
     toEncoding = genericToEncoding defaultOptions
 
 instance FromJSON Telephone
-
-affiche :: Telephone -> IO ()
-affiche t = putStrLn $ (show . typeDeTelephone) t <> " : " <> (show . numéro) t

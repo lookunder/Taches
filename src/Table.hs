@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module Table (Table(..), Tabuler(..), Aligner(..), (<>), show, index) where
+module Table (Table(..), Tabuler(..), Aligner(..), index) where
 
 import Data.List
 import qualified Data.Text as T

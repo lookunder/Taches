@@ -64,10 +64,6 @@ ajouterEtPersister fichier elements mElement = do
       encodeFile fichier elements'
       return elements'
 
-utiliseDéfaut :: T.Text -> T.Text -> T.Text
-utiliseDéfaut défaut "" = défaut
-utiliseDéfaut _      t  = t
-
 obtenirContact :: IO (Maybe Personne)
 obtenirContact = runMaybeT $ do
   uuid <- MaybeT (Just <$> nextRandom)
@@ -76,10 +72,6 @@ obtenirContact = runMaybeT $ do
   altAccount <- MaybeT (TIO.putStr "Alt Account : " >> checkInput <$> TIO.getLine)
   courriel <- MaybeT (TIO.putStr "Courriel : " >> checkInput <$> TIO.getLine)
   return $ Personne uuid nom alias altAccount courriel []
-
-obtLigneAvecDéfaut :: T.Text -> T.Text -> MaybeT IO T.Text
-obtLigneAvecDéfaut question défaut = do
-  MaybeT (TIO.putStr ( question <> "[" <> défaut <> "]" <>" : ") >> checkInput . utiliseDéfaut défaut <$> TIO.getLine)
 
 modifierContact :: Personne -> IO (Maybe Personne)
 modifierContact personne = runMaybeT $ do

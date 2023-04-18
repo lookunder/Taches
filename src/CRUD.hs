@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module CRUD (CRUD(..), eitherA2MaybeT, checkInput, sélectionnerContact) where
+module CRUD (CRUD(..), eitherA2MaybeT, checkInput, sélectionnerContact, obtLigneAvecDéfaut) where
 
 import Data.Aeson
 import Data.List
@@ -53,3 +53,11 @@ eitherA2MaybeT eData = do
 checkInput :: T.Text -> Maybe T.Text
 checkInput ":q" = Nothing
 checkInput i    = Just i
+
+utiliseDéfaut :: T.Text -> T.Text -> T.Text
+utiliseDéfaut défaut "" = défaut
+utiliseDéfaut _      t  = t
+
+obtLigneAvecDéfaut :: T.Text -> T.Text -> MaybeT IO T.Text
+obtLigneAvecDéfaut question défaut = do
+  MaybeT (TIO.putStr ( question <> "[" <> défaut <> "]" <>" : ") >> checkInput . utiliseDéfaut défaut <$> TIO.getLine)
