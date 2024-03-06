@@ -1,13 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module CRUD (CRUD(..), eitherA2MaybeT, checkInput, sélectionnerContact, obtLigneAvecDéfaut) where
+module CRUD (CRUD(..), eitherA2MaybeT, checkInput, sélectionnerContact, obtLigneAvecDéfaut, obtDate) where
 
 import Data.Aeson
 import Data.List
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import qualified Data.Text.Read as TR
+import Data.Time.Calendar
+import Data.Time.Clock
+import Data.Time.Format.ISO8601 (iso8601ParseM, iso8601Show)
 import Control.Monad
+import Control.Monad.IO.Class
 import Control.Monad.Trans
 import Control.Monad.Trans.Maybe
 import Table
@@ -61,3 +65,22 @@ utiliseDéfaut _      t  = t
 obtLigneAvecDéfaut :: T.Text -> T.Text -> MaybeT IO T.Text
 obtLigneAvecDéfaut question défaut = do
   MaybeT (TIO.putStr ( question <> "[" <> défaut <> "]" <>" : ") >> checkInput . utiliseDéfaut défaut <$> TIO.getLine)
+
+
+formaterDate :: Maybe Day -> T.Text
+formaterDate Nothing = ""
+formaterDate (Just day) = T.pack(iso8601Show day)
+
+obtDate :: T.Text -> Maybe Day -> MaybeT IO (Maybe Day)
+obtDate question mValeur = do
+  liftIO . TIO.putStr $ question <> "[" <> formaterDate mValeur <> "] : "
+  texte <- liftIO TIO.getLine
+  case texte of
+    ":q" -> mzero           -- Nothing
+    ":n" -> return mzero    -- Just Nothing
+    ""   -> return mValeur  -- Just Maybe Day
+    t    -> do
+      let mDay = iso8601ParseM (T.unpack t)
+      case mDay of
+        Just d  -> return (Just d)
+        Nothing -> obtDate question mValeur
