@@ -4,9 +4,8 @@ module Main where
 
 import Table
 import Control.Monad ( void )
-import CRUD ( CRUD(modifier, lister, ajouter, effacer) )
+import CRUD(modifier, lister, ajouter, effacer)
 import Data.Aeson
-import qualified Data.Text as T
 import Options.Applicative
 import Personne
 import System.Directory ( doesFileExist, getHomeDirectory )
