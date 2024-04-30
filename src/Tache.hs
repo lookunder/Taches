@@ -61,4 +61,4 @@ afficherLigne []         = return ()
 afficher :: Tache -> T.Text
 afficher (Tache nom _ Complete) = "\ESC[31mX\ESC[0m" <> " " <> nom
 afficher (Tache nom _ Actif)    = "-" <> " " <> nom
-afficher (Tache nom _ Annule)   = "A" <> " " <> nom
+afficher (Tache nom _ Annule)   = "\ESC[93mA\ESC[0m" <> " " <> nom
