@@ -1,6 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module CRUD (CRUD(..), eitherA2MaybeT, checkInput, sélectionnerContact, obtLigneAvecDéfaut, obtDate) where
+module CRUD ( CRUD(..)
+            , checkInput
+            , obtLigneAvecDéfaut
+            , obtDate
+            ) where
 
 import Data.Aeson
 import Data.List
@@ -18,12 +22,15 @@ import Table
 
 class (ToJSON a, Tabuler a) => CRUD a where
   ajouter  :: FilePath -> [a] -> IO [a]
+  ajouter fichier elements = ajouterIO >>= ajouterEtPersister fichier elements
+
+  ajouterIO :: IO (Maybe a)
 
   effacer  :: FilePath -> [a] -> IO [a]
   effacer fichier elements = do
     let table = convertirAvecEntête elements
         tableIndexee = Table.index <> table
-    print tableIndexee >> sélectionnerContact >>= effacerEtPersister fichier elements
+    print tableIndexee >> sélectionnerLigne >>= effacerEtPersister fichier elements
 
   lister   :: [a] -> IO [a]
   lister elements = do
@@ -32,6 +39,12 @@ class (ToJSON a, Tabuler a) => CRUD a where
     print tableIndexee >> return elements
 
   modifier :: FilePath -> [a] -> IO [a]
+  modifier fichier elements = do
+    let table = convertirAvecEntête elements
+        tableIndexee = Table.index <> table
+    print tableIndexee >> sélectionnerLigne >>= modifierEtPersister fichier elements
+  
+  modifierIO :: a -> IO (Maybe a)
 
 effacerEtPersister :: ToJSON a => FilePath -> [a] -> Maybe Integer -> IO [a]
 effacerEtPersister fichier elements mIndex = do
@@ -43,8 +56,31 @@ effacerEtPersister fichier elements mIndex = do
       encodeFile fichier elements'
       return elements'
 
-sélectionnerContact :: IO (Maybe Integer)
-sélectionnerContact = runMaybeT $ do
+ajouterEtPersister :: ToJSON a => FilePath -> [a] -> Maybe a -> IO [a]
+ajouterEtPersister fichier elements mElement = do
+  case mElement of
+    Nothing -> return elements
+    Just element -> do
+      let elements' =  element:elements
+      encodeFile fichier elements'
+      return elements'
+
+modifierEtPersister :: CRUD a => FilePath -> [a] -> Maybe Integer -> IO [a]
+modifierEtPersister fichier elements mIndex = do
+  case mIndex of
+    Nothing -> return elements
+    Just index -> do
+      let (debut,f:fin) = genericSplitAt index elements
+      mContact <- modifierIO f
+      case mContact of
+        Nothing -> return elements
+        Just c -> do
+              let elements' = debut <> (c:fin)
+              encodeFile fichier elements'
+              return elements'
+              
+sélectionnerLigne :: IO (Maybe Integer)
+sélectionnerLigne = runMaybeT $ do
   numéro <- MaybeT (TIO.putStr "Numéro : " >> checkInput <$> TIO.getLine)
   eitherA2MaybeT . TR.decimal $ numéro
 
@@ -65,7 +101,6 @@ utiliseDéfaut _      t  = t
 obtLigneAvecDéfaut :: T.Text -> T.Text -> MaybeT IO T.Text
 obtLigneAvecDéfaut question défaut = do
   MaybeT (TIO.putStr ( question <> "[" <> défaut <> "]" <>" : ") >> checkInput . utiliseDéfaut défaut <$> TIO.getLine)
-
 
 formaterDate :: Maybe Day -> T.Text
 formaterDate Nothing = ""

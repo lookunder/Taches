@@ -66,7 +66,7 @@ library Personne
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base >=4.13.0.0, aeson, text, uuid, mtl, transformers, time
+    build-depends:    base >=4.13.0.0, aeson, text, uuid, mtl, transformers, time, text-conversions
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -141,7 +141,7 @@ executable pp
         optparse-applicative,
         filepath,
         Parametres, text, bytestring,
-        uuid, mtl, transformers
+        uuid, mtl, transformers, text-conversions
     hs-source-dirs:   app, src
     default-language: Haskell2010
 
